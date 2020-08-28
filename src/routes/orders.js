@@ -9,8 +9,13 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res) => {
+    const newOrder = {
+        productID: req.body.productID,
+        quantity: req.body.quantity,
+    }
     res.json({
-        message: 'Update orders'
+        message: 'Add new order', 
+        order: newOrder,
     })
 })
 

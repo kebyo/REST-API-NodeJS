@@ -3,17 +3,15 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-const productRouts = require('./src/routes/products');
-const ordersRouts = require('./src/routes/orders');
-
 app.use(bodyParser.urlencoded({
     extended: false,
 }))
-
 app.use(bodyParser.json());
 
-app.use('/products', productRouts);
+const productRouts = require('./src/routes/products');
+const ordersRouts = require('./src/routes/orders');
 
+app.use('/products', productRouts);
 app.use('/orders', ordersRouts);
 
 app.use((req, res, next) => {
@@ -21,7 +19,6 @@ app.use((req, res, next) => {
     error.status = 404;
     next(error);
 })
-
 app.use((error, req, res, next) => {
     res.status(error.status);
     res.json({

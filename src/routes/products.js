@@ -1,4 +1,4 @@
-const express = require('express');
+    const express = require('express');
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -8,9 +8,15 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
+    const newProduct = {
+        name: req.body.name,
+        price: req.body.price,
+    };
+
     res.json({
-        message: 'Update products'
-    })
+        message: 'Add new product',
+        addedProduct: newProduct,
+    });
 });
 
 router.get('/:id', (req, res) => {
