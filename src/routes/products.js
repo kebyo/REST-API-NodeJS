@@ -1,22 +1,25 @@
-    const express = require('express');
+const express = require('express');
 const router = express.Router();
+const Product = require('../models/product');
+const mongoose = require('mongoose');
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+    const products = (await Product.find()).map(product => ({name: product.name, price: product.price}));
+    console.log(products);
     res.json({
-        message: 'Get products'
+        products,
     })
 });
 
-router.post('/', (req, res) => {
-    const newProduct = {
+router.post('/', async (req, res) => {
+    const product = new Product({
         name: req.body.name,
         price: req.body.price,
-    };
-
+    })
+    const result = await product.save();
     res.json({
-        message: 'Add new product',
-        addedProduct: newProduct,
-    });
+        message: "It works",
+    })
 });
 
 router.get('/:id', (req, res) => {

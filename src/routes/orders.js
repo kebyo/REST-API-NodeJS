@@ -1,22 +1,25 @@
 const express = require('express');
-const { route } = require('./products');
 const router = express.Router();
+const Order = require('../models/order');
+const Product  = require('../models/product');
 
 router.get('/', (req, res) => {
     res.json({
-        message: 'Get orders'
+        message: 'Get orders',
     })
 })
 
-router.post('/', (req, res) => {
-    const newOrder = {
-        productID: req.body.productID,
-        quantity: req.body.quantity,
-    }
+router.post('/', async (req, res) => {
+    console.log(req.body.products);
+    const order = new Order({
+        customerID: req.body.customerID,
+        products: req.body.products,
+    })
+    await order.save();
     res.json({
         message: 'Add new order', 
-        order: newOrder,
-    })
+        order: order,
+    });
 })
 
 router.get('/:id', (req, res) => {
