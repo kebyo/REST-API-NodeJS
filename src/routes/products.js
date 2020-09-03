@@ -4,7 +4,7 @@ const Product = require('../models/product');
 const mongoose = require('mongoose');
 
 router.get('/', async (req, res) => {
-    const products = (await Product.find()).map(product => ({name: product.name, price: product.price}));
+    const products = (await Product.find()).map(product => ({id: product.id, name: product.name, price: product.price}));
     console.log(products);
     res.json({
         products,
@@ -12,32 +12,46 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const product = new Product({
-        name: req.body.name,
-        price: req.body.price,
-    })
-    const result = await product.save();
-    res.json({
-        message: "It works",
-    })
+    try { 
+        const product = new Product({
+            id: (await Product.find()).length + 1,
+            name: req.body.name,
+            price: req.body.price,
+        })
+        await product.save();
+        res.json({
+            message: "It works",
+        })
+    } catch (err) {
+        res.json({
+            error: err.message,
+        })
+    }
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
     const id = req.params.id;
+    const product = await Product.find({id});
     res.json({
-        message: `Get product with id: ${id}`
+        message: `Get product with id: ${id}`,
+        product,
     })
 })
 
-router.patch('/:id', (req, res) => {
-    const id = req.params.id;
+router.patch('/:id', async (req, res) => {
+    const upd = {};
+    for (const item of req.body){
+        upd[item.propName] = item.value;
+    }
+    await Product.update({id: upd.id}, {upd});
     res.json({
-        message: `Update product with id: ${id}`
+        message: `Update product with id: ${id}`, 
     })
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
     const id = req.params.id;
+    await Product.remove({id});
     res.json({
         message: `Delete product with id: ${id}`
     })
