@@ -4,15 +4,20 @@ const Product = require('../models/product');
 const mongoose = require('mongoose');
 
 router.get('/', async (req, res) => {
-    const products = (await Product.find()).map(product => ({id: product.id, name: product.name, price: product.price}));
-    console.log(products);
+    const products = (await Product.find()).map(product => ({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        url: "http://localhost:3000/products/" + product.id,
+    }));
+
     res.json({
         products,
     })
 });
 
 router.post('/', async (req, res) => {
-    try { 
+    try {
         const product = new Product({
             id: (await Product.find()).length + 1,
             name: req.body.name,
@@ -20,7 +25,13 @@ router.post('/', async (req, res) => {
         })
         await product.save();
         res.json({
-            message: "It works",
+            message: "New product added!",
+            AddedProduct: {
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                url: "http://localhost:3000/products/" + product.id,
+            }
         })
     } catch (err) {
         res.json({
@@ -31,7 +42,7 @@ router.post('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const id = req.params.id;
-    const product = await Product.find({id});
+    const product = await Product.find({ id });
     res.json({
         message: `Get product with id: ${id}`,
         product,
@@ -40,18 +51,31 @@ router.get('/:id', async (req, res) => {
 
 router.patch('/:id', async (req, res) => {
     const upd = {};
-    for (const item of req.body){
-        upd[item.propName] = item.value;
+    const id = req.params.id;
+
+    for (const key in req.body) {
+        upd[key] = req.body[key];
     }
-    await Product.update({id: upd.id}, {upd});
+
+    await Product.update({ id }, { $set: upd });
+
+    const updProduct = await Product.find({ id })
+    console.log(updProduct);
+
     res.json({
-        message: `Update product with id: ${id}`, 
+        message: `Update product with id: ${id}`,
+        updatedProduct: {
+            id,
+            name: updProduct.name,
+            price: updProduct.price,
+            url: "http://localhost:3000/products/" + id,
+        }
     })
 })
 
 router.delete('/:id', async (req, res) => {
     const id = req.params.id;
-    await Product.remove({id});
+    await Product.remove({ id });
     res.json({
         message: `Delete product with id: ${id}`
     })
