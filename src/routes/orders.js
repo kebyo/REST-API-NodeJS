@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../models/order');
+const mongoose = require('mongoose');
 
 router.get('/', async (req, res) => {
-    const orders = (await Order.find()).map(order => ({ customerID: order.customerID, products: order.products }));
+    const orders = (await Order.find()).map(order => ({ orderID: order.id, productID: order.productID, quantity: order.quantity }));
     res.json({
         orders,
     })
@@ -11,15 +12,16 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        console.log(req.body.products);
         const order = new Order({
-            customerID: req.body.customerID,
-            products: req.body.products,
+            id: (await Order.find()).length + 1,
+            quantity: req.body.quantity,
+            productID: req.body.product,
         })
         await order.save();
+        console.log(order);
         res.json({
             message: 'Add new order',
-            order: order,
+            order,
         });
     } catch (err) {
         res.json({
