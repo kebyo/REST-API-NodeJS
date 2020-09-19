@@ -59,17 +59,16 @@ router.patch('/:id', async (req, res) => {
 
     await Product.update({ id }, { $set: upd });
 
-    const updProduct = await Product.find({ id })
-    console.log(updProduct);
+    const updProduct = await Product.find({ id });
 
     res.json({
         message: `Update product with id: ${id}`,
         updatedProduct: {
             id,
-            name: updProduct.name,
-            price: updProduct.price,
+            name: updProduct[0].name,
+            price: updProduct[0].price,
             url: "http://localhost:3000/products/" + id,
-        }
+        },
     })
 })
 
