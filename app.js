@@ -15,8 +15,9 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json());
 
-const productRouts = require('./src/routes/products');
-const ordersRouts = require('./src/routes/orders');
+const productRoutes = require('./src/routes/products');
+const ordersRoutes = require('./src/routes/orders');
+const userRoutes = require('./src/routes/user');
 
 app.use((req, res, next) => {
     res.header('Acces-Control-Allow-Origin', '*');
@@ -27,9 +28,10 @@ app.use((req, res, next) => {
     }
     next();
 })
+app.use('/products', productRoutes);
+app.use('/orders', ordersRoutes);
+app.use('/users', userRoutes);
 
-app.use('/products', productRouts);
-app.use('/orders', ordersRouts);
 
 app.post('/test', (req, res) => {
     console.log(req.body);

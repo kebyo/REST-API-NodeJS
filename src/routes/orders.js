@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
         res.json({
             message: 'Add new order',
             order,
-            url: "http://localhost:3000/orders/" + order._id,
+            url: 'http://localhost:3000/orders/' + order._id,
         });
     } catch (err) {
         res.json({

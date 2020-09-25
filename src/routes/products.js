@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
         id: product._id,
         name: product.name,
         price: product.price,
-        url: "http://localhost:3000/products/" + product._id,
+        url: 'http://localhost:3000/products/' + product._id,
     }));
 
     res.json({
@@ -40,12 +40,12 @@ router.post('/', upload.single('productImage'), async (req, res) => {
         })
         await product.save();
         res.json({
-            message: "New product added!",
+            message: 'New product added!',
             AddedProduct: {
                 id: product._id,
                 name: product.name,
                 price: product.price,
-                url: "http://localhost:3000/products/" + product._id,
+                url: 'http://localhost:3000/products/' + product._id,
             }
         })
     } catch (err) {
@@ -82,7 +82,7 @@ router.patch('/:id', async (req, res) => {
             id,
             name: updProduct[0].name,
             price: updProduct[0].price,
-            url: "http://localhost:3000/products/" + id,
+            url: 'http://localhost:3000/products/' + id,
         },
     })
 })
